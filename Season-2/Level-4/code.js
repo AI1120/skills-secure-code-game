@@ -1,14 +1,3 @@
-// Welcome to Secure Code Game Season-2/Level-4!
-
-// Follow the instructions below to get started:
-
-// 1. test.js is passing but the code here is vulnerable
-// 2. Review the code. Can you spot the bugs(s)?
-// 3. Fix the code.js but ensure that test.js passes
-// 4. Run hack.js and if passing then CONGRATS!
-// 5. If stuck then read the hint
-// 6. Compare your solution with solution.js
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const libxmljs = require("libxmljs");
@@ -16,10 +5,17 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const { exec } = require("node:child_process");
+const rateLimit = require("express-rate-limit");
 const app = express();
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.text({ type: "application/xml" }));
+app.use(limiter);
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });

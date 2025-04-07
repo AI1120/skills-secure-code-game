@@ -9,8 +9,8 @@ from flask import Flask, request
 app = Flask(__name__)
 @app.route("/")
 def source():
-    TaxPayer('foo', 'bar').get_tax_form_attachment(request.args["input"])
-    TaxPayer('foo', 'bar').get_prof_picture(request.args["input"])
+    TaxPayer('foo', 'bar').get_tax_form_attachment(os.path.basename(request.args["input"]))
+    TaxPayer('foo', 'bar').get_prof_picture(os.path.basename(request.args["input"]))
 ### Unrelated to the exercise -- Ends here -- Please ignore
 
 class TaxPayer:
@@ -33,6 +33,7 @@ class TaxPayer:
 
         # builds path
         base_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.basename(path)
         prof_picture_path = os.path.normpath(os.path.join(base_dir, path))
 
         with open(prof_picture_path, 'rb') as pic:
@@ -48,6 +49,9 @@ class TaxPayer:
         if not path:
             raise Exception("Error: Tax form is required for all users")
 
+        path = os.path.basename(path)
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.normpath(os.path.join(base_dir, path))
         with open(path, 'rb') as form:
             tax_data = bytearray(form.read())
 

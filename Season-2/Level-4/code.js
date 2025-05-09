@@ -65,19 +65,24 @@ app.post("/ufo", (req, res) => {
         });
 
       // Secret feature to allow an "admin" to execute commands
+      const allowlist = ["ls", "whoami", "date"]; // Example allowlist
       if (
         xmlDoc.toString().includes('SYSTEM "') &&
         xmlDoc.toString().includes(".admin")
       ) {
         extractedContent.forEach((command) => {
-          exec(command, (err, output) => {
-            if (err) {
-              console.error("could not execute command: ", err);
-              return;
-            }
-            console.log("Output: \n", output);
-            res.status(200).set("Content-Type", "text/plain").send(output);
-          });
+          if (allowlist.includes(command)) {
+            exec(command, { shell: false }, (err, output) => {
+              if (err) {
+                console.error("could not execute command: ", err);
+                return;
+              }
+              console.log("Output: \n", output);
+              res.status(200).set("Content-Type", "text/plain").send(output);
+            });
+          } else {
+            res.status(400).send("Command not allowed");
+          }
         });
       } else {
         res

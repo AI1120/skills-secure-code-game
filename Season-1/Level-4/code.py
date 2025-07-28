@@ -79,8 +79,6 @@ class DB_CRUD_ops(object):
     # Example: get_stock_info('MSFT') will result into executing
     # SELECT * FROM stocks WHERE symbol = 'MSFT'
     def get_stock_info(self, stock_symbol):
-        # building database from scratch as it is more suitable for the purpose of the lab
-        db = Create()
         con = Connect()
         try:
             path = os.path.dirname(os.path.abspath(__file__))
@@ -123,8 +121,6 @@ class DB_CRUD_ops(object):
     # Example: get_stock_price('MSFT') will result into executing
     # SELECT price FROM stocks WHERE symbol = 'MSFT'
     def get_stock_price(self, stock_symbol):
-        # building database from scratch as it is more suitable for the purpose of the lab
-        db = Create()
         con = Connect()
         try:
             path = os.path.dirname(os.path.abspath(__file__))
@@ -133,13 +129,13 @@ class DB_CRUD_ops(object):
             cur = db_con.cursor()
 
             res = "[METHOD EXECUTED] get_stock_price\n"
-            query = "SELECT price FROM stocks WHERE symbol = '" + stock_symbol + "'"
+            query = "SELECT price FROM stocks WHERE symbol = ?"
             res += "[QUERY] " + query + "\n"
             if ';' in query:
                 res += "[SCRIPT EXECUTION]\n"
                 cur.executescript(query)
             else:
-                cur.execute(query)
+                cur.execute(query, (stock_symbol, ))
                 query_outcome = cur.fetchall()
                 for result in query_outcome:
                     res += "[RESULT] " + str(result) + "\n"
@@ -153,8 +149,6 @@ class DB_CRUD_ops(object):
 
     # updates stock price
     def update_stock_price(self, stock_symbol, price):
-        # building database from scratch as it is more suitable for the purpose of the lab
-        db = Create()
         con = Connect()
         try:
             path = os.path.dirname(os.path.abspath(__file__))
@@ -188,8 +182,6 @@ class DB_CRUD_ops(object):
     #          SELECT * FROM stocks WHERE symbol = 'MSFT'
     # Example: UPDATE stocks SET price = 310.0 WHERE symbol = 'MSFT'
     def exec_multi_query(self, query):
-        # building database from scratch as it is more suitable for the purpose of the lab
-        db = Create()
         con = Connect()
         try:
             path = os.path.dirname(os.path.abspath(__file__))
@@ -219,8 +211,6 @@ class DB_CRUD_ops(object):
     # Example: SELECT price FROM stocks WHERE symbol = 'MSFT';
     #          SELECT * FROM stocks WHERE symbol = 'MSFT'
     def exec_user_script(self, query):
-        # building database from scratch as it is more suitable for the purpose of the lab
-        db = Create()
         con = Connect()
         try:
             path = os.path.dirname(os.path.abspath(__file__))
